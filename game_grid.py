@@ -24,6 +24,12 @@ class GameGrid:
       # thickness values used for the grid lines and the grid boundaries
       self.line_thickness = 0.002
       self.box_thickness = 10 * self.line_thickness
+      # initialize score
+      self.score = 0
+      # set the display position for score
+      self.score_pos_x = grid_w - 3
+      self.score_pos_y = grid_h - 2
+
 
    # A method for displaying the game grid
    def display(self):
@@ -37,8 +43,17 @@ class GameGrid:
          self.current_tetromino.draw()
       # draw a box around the game grid
       self.draw_boundaries()
+      # display the score
+      self.display_score()
       # show the resulting drawing with a pause duration = 250 ms
       stddraw.show(250)
+
+      # Display the current score
+   def display_score(self):
+      stddraw.setPenColor(Color(255, 255, 255))
+      stddraw.setFontFamily("Arial")
+      stddraw.setFontSize(20)
+      stddraw.text(self.score_pos_x, self.score_pos_y, "Score: " + str(self.score))
 
    # A method for drawing the cells and the lines of the game grid
    def draw_grid(self):
@@ -113,5 +128,44 @@ class GameGrid:
                # the game is over if any placed tile is above the game grid
                else:
                   self.game_over = True
+
+      # check for completed rows and clear them
+      self.check_and_clear_rows()
       # return the value of the game_over flag
       return self.game_over
+   
+      # Check for completed rows and clear them
+   def check_and_clear_rows(self):
+      # Check each row from bottom to top
+      rows_to_clear = []
+      for row in range(self.grid_height):
+         # Check if the row is completely filled
+         row_is_full = True
+         for col in range(self.grid_width):
+            if self.tile_matrix[row][col] is None:
+               row_is_full = False
+               break
+         
+         # If the row is full, mark it for clearing
+         if row_is_full:
+            rows_to_clear.append(row)
+      
+      # If there are rows to clear
+      if rows_to_clear:
+         # Update the score (more points for clearing multiple rows at once)
+         points_per_row = 100
+         bonus_multiplier = len(rows_to_clear)
+         self.score += points_per_row * bonus_multiplier * bonus_multiplier
+         
+         # Clear the rows and move tiles down
+         for row_to_clear in sorted(rows_to_clear):
+            # Clear this row
+            for col in range(self.grid_width):
+               self.tile_matrix[row_to_clear][col] = None
+            
+            # Move all rows above down by one
+            for row in range(row_to_clear + 1, self.grid_height):
+               for col in range(self.grid_width):
+                  if row < self.grid_height:
+                     self.tile_matrix[row - 1][col] = self.tile_matrix[row][col]
+                     self.tile_matrix[row][col] = None
