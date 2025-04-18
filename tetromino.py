@@ -175,3 +175,87 @@ class Tetromino:
                   break  # end the inner for loop
       # if this method does not end by returning False before this line
       return True  # this tetromino can be moved in the given direction
+
+# Method to rotate the tetromino clockwise
+   def rotate_clockwise(self, game_grid):
+      # Skip rotation for O tetromino as it looks the same when rotated
+      if self.type == 'O':
+         return True
+      
+      # Create a copy of the tile matrix to work with
+      n = len(self.tile_matrix)
+      rotated_matrix = np.full((n, n), None)
+      
+      # Rotate the tile matrix 90 degrees clockwise
+      for row in range(n):
+         for col in range(n):
+            if self.tile_matrix[row][col] is not None:
+               rotated_matrix[col][n-1-row] = self.tile_matrix[row][col]
+      
+      # Check if the rotated tetromino can be placed in the current position
+      if not self.can_be_rotated(rotated_matrix, game_grid):
+         return False  # Cannot rotate in the current position
+      
+      # Apply the rotation
+      self.tile_matrix = rotated_matrix
+      return True
+
+   # Method to rotate the tetromino counter-clockwise
+   def rotate_counter_clockwise(self, game_grid):
+      # Skip rotation for O tetromino as it looks the same when rotated
+      if self.type == 'O':
+         return True
+      
+      # Create a copy of the tile matrix to work with
+      n = len(self.tile_matrix)
+      rotated_matrix = np.full((n, n), None)
+      
+      # Rotate the tile matrix 90 degrees counter-clockwise
+      for row in range(n):
+         for col in range(n):
+            if self.tile_matrix[row][col] is not None:
+               rotated_matrix[n-1-col][row] = self.tile_matrix[row][col]
+      
+      # Check if the rotated tetromino can be placed in the current position
+      if not self.can_be_rotated(rotated_matrix, game_grid):
+         return False  # Cannot rotate in the current position
+      
+      # Apply the rotation
+      self.tile_matrix = rotated_matrix
+      return True
+   
+   # Check if the rotated tetromino can be placed in the current position
+   def can_be_rotated(self, rotated_matrix, game_grid):
+      n = len(rotated_matrix)
+      
+      # Check each cell of the rotated matrix
+      for row in range(n):
+         for col in range(n):
+            if rotated_matrix[row][col] is not None:
+               # Get the position on the grid
+               position = self.get_cell_position(row, col)
+               
+               # Check if the position is inside the grid boundaries
+               if (position.x < 0 or position.x >= Tetromino.grid_width or
+                   position.y < 0 or position.y >= Tetromino.grid_height):
+                  return False
+               
+               # Check if the cell is already occupied on the grid
+               if game_grid.is_occupied(position.y, position.x):
+                  # Skip checking the cells occupied by the current tetromino
+                  current_pos = False
+                  for curr_row in range(n):
+                     for curr_col in range(n):
+                        if self.tile_matrix[curr_row][curr_col] is not None:
+                           curr_position = self.get_cell_position(curr_row, curr_col)
+                           if curr_position.x == position.x and curr_position.y == position.y:
+                              current_pos = True
+                              break
+                     if current_pos:
+                        break
+                  
+                  # If it's not a position occupied by the current tetromino, rotation is not possible
+                  if not current_pos:
+                     return False
+      
+      return True
