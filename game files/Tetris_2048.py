@@ -179,6 +179,7 @@ def start():
         
         if not is_paused:
             success = current_tetromino.move("down", grid)
+            
             if not success:
                 tiles, pos = current_tetromino.get_min_bounded_tile_matrix(True)
                 game_over = grid.update_grid(tiles, pos)

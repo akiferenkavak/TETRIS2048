@@ -4,7 +4,7 @@ import copy as cp  # the copy module is used for copying tiles and positions
 import random  # the random module is used for generating random values
 import numpy as np  # the fundamental Python module for scientific computing
 
-# A class for modeling tetrominoes with all 7 different types: I, O, Z, T, S, J, L
+# A class for modeling tetrominoes with 3 out of 7 different types as I, O and Z
 class Tetromino:
    # the dimensions of the game grid (defined as class variables)
    grid_height, grid_width = None, None
@@ -12,9 +12,8 @@ class Tetromino:
    # A constructor for creating a tetromino with a given shape (type)
    def __init__(self, shape):
       self.type = shape  # set the type of this tetromino
-      self.id = id(self)  # set the id of this tetromino
       # determine the occupied (non-empty) cells in the tile matrix based on
-      # the shape of this tetromino
+      # the shape of this tetromino (see the documentation given with this code)
       occupied_cells = []
       if self.type == 'I':
          n = 4  # n = number of rows = number of columns in the tile matrix
@@ -38,34 +37,30 @@ class Tetromino:
          occupied_cells.append((1, 2))
          occupied_cells.append((2, 2))
       elif self.type == 'T':
-         n = 3  # n = number of rows = number of columns in the tile matrix
-         # shape of the tetromino T in its initial rotation state
-         occupied_cells.append((0, 1))  # (column_index, row_index)
+         n = 3
+         occupied_cells.append((0, 1))
          occupied_cells.append((1, 1))
          occupied_cells.append((2, 1))
          occupied_cells.append((1, 2))
       elif self.type == 'S':
-         n = 3  # n = number of rows = number of columns in the tile matrix
-         # shape of the tetromino S in its initial rotation state
-         occupied_cells.append((1, 1))  # (column_index, row_index)
+         n = 3
+         occupied_cells.append((1, 1))
          occupied_cells.append((2, 1))
          occupied_cells.append((0, 2))
          occupied_cells.append((1, 2))
       elif self.type == 'J':
-         n = 3  # n = number of rows = number of columns in the tile matrix
-         # shape of the tetromino J in its initial rotation state
-         occupied_cells.append((0, 0))  # (column_index, row_index)
+         n = 3
+         occupied_cells.append((0, 0))
          occupied_cells.append((0, 1))
          occupied_cells.append((1, 1))
          occupied_cells.append((2, 1))
       elif self.type == 'L':
-         n = 3  # n = number of rows = number of columns in the tile matrix
-         # shape of the tetromino L in its initial rotation state
-         occupied_cells.append((2, 0))  # (column_index, row_index)
+         n = 3
+         occupied_cells.append((2, 0))
          occupied_cells.append((0, 1))
          occupied_cells.append((1, 1))
          occupied_cells.append((2, 1))
-      
+   
       # create a matrix of numbered tiles based on the shape of this tetromino
       self.tile_matrix = np.full((n, n), None)
       # create the four tiles (minos) of this tetromino and place these tiles
@@ -74,14 +69,11 @@ class Tetromino:
          col_index, row_index = occupied_cells[i][0], occupied_cells[i][1]
          # create a tile for each occupied cell of this tetromino
          self.tile_matrix[row_index][col_index] = Tile()
-      
-      # set id after each tile is created
+         
+      # Her tile oluşturulduğunda, %70 ihtimalle 2, %30 ihtimalle 4 atayalım
       for row in range(n):
          for col in range(n):
             if self.tile_matrix[row][col] is not None:
-               self.tile_matrix[row][col].tetromino_id = self.id
-               self.tile_matrix[row][col].type = self.type
-               # Her tile oluşturulduğunda, %70 ihtimalle 2, %30 ihtimalle 4 atayalım
                number = 2 if random.random() < 0.7 else 4
                self.tile_matrix[row][col].number = number
 
@@ -217,11 +209,10 @@ class Tetromino:
       # if this method does not end by returning False before this line
       return True  # this tetromino can be moved in the given direction
 
-   # Method to rotate the tetromino clockwise
+# Method to rotate the tetromino clockwise
    def rotate_clockwise(self, game_grid):
       # Skip rotation for O tetromino as it looks the same when rotated
-      if self.type == 'O':
-         return True
+   
       
       # Create a copy of the tile matrix to work with
       n = len(self.tile_matrix)
@@ -244,8 +235,7 @@ class Tetromino:
    # Method to rotate the tetromino counter-clockwise
    def rotate_counter_clockwise(self, game_grid):
       # Skip rotation for O tetromino as it looks the same when rotated
-      if self.type == 'O':
-         return True
+      
       
       # Create a copy of the tile matrix to work with
       n = len(self.tile_matrix)

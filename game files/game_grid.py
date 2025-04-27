@@ -126,59 +126,21 @@ class GameGrid:
    
  
    def merge_tiles(self):
-      merged = True
-      while merged:
-         merged = False
-         # vertical merge bottom to top
-         for col in range(self.grid_width):
-               row = 0
-               while row < self.grid_height - 1:
-                  curr_tile = self.tile_matrix[row][col]
-                  above_tile = self.tile_matrix[row + 1][col]
+    for col in range(self.grid_width):
+      merged_flags = [False for _ in range(self.grid_height)]
+      for row in range(self.grid_height - 1):
+        current_tile = self.tile_matrix[row][col]
+        tile_above = self.tile_matrix[row + 1][col]
 
-                  if curr_tile and above_tile and curr_tile.number == above_tile.number:
-                     curr_tile.number *= 2
-                     self.tile_matrix[row + 1][col] = None
-                     self.score += curr_tile.number
-                     merged = True
-                  row += 1
+        if current_tile and tile_above and current_tile.number == tile_above.number:
+            if not merged_flags[row] and not merged_flags[row + 1]:
+                self.tile_matrix[row][col].number *= 2
+                self.tile_matrix[row + 1][col] = None
+                merged_flags[row] = True
+                self.score += self.tile_matrix[row][col].number
 
-      self.drop_floating_tiles()
 
-      # handle free tiles and delete them
-   def handle_free_tiles(self):
-      # Tüm grid'i tarayarak zemine veya diğer karelere bağlı olmayanları bul
-      connected = [[False for _ in range(self.grid_width)] for _ in range(self.grid_height)]
-      
-      # Zemine bağlı olanları işaretle
-      for col in range(self.grid_width):
-         if self.tile_matrix[0][col] is not None:
-               self.mark_connected(0, col, connected)
-      
-      # Bağlı olmayanları sil ve skorları ekle
-      for row in range(self.grid_height):
-         for col in range(self.grid_width):
-               if self.tile_matrix[row][col] is not None and not connected[row][col]:
-                  # Skora ekle
-                  self.score += self.tile_matrix[row][col].number
-                  # Kareyi sil
-                  self.tile_matrix[row][col] = None
-   
-      # 6. Bağlı kareleri işaretleme fonksiyonu (DFS algoritması)
-   def mark_connected(self, row, col, connected):
-      if not self.is_inside(row, col) or self.tile_matrix[row][col] is None or connected[row][col]:
-         return
-      
-      connected[row][col] = True
-      
-      # 4 yönde komşuları kontrol et
-      directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # sağ, yukarı, sol, aşağı
-      for dx, dy in directions:
-         new_row, new_col = row + dy, col + dx
-         if self.is_inside(new_row, new_col) and self.tile_matrix[new_row][new_col] is not None:
-               self.mark_connected(new_row, new_col, connected)
-
-    
+    self.drop_floating_tiles()
    def drop_floating_tiles(self):
     for col in range(self.grid_width):
         for row in range(1, self.grid_height):
@@ -249,15 +211,6 @@ class GameGrid:
       self.current_tetromino = None
       # lock the tiles of the current tetromino (tiles_to_lock) on the grid
       n_rows, n_cols = len(tiles_to_lock), len(tiles_to_lock[0])
-
-      # save the tetromino_id of the current tetromino
-      tetromino_id = None
-      for row in range(n_rows):
-         for col in range(n_cols):
-               if tiles_to_lock[row][col] is not None:
-                  tetromino_id = tiles_to_lock[row][col].tetromino_id
-                  break
-
       for col in range(n_cols):
          for row in range(n_rows):
             # place each tile (occupied cell) onto the game grid
@@ -273,7 +226,6 @@ class GameGrid:
                   self.game_over = True
       # return the value of the game_over flag
       self.merge_tiles()
-      self.handle_free_tiles() #handles free tiles
       self.clear_full_rows()
 
       # Mevcut tetromino'yu sonraki tetromino ile değiştir
