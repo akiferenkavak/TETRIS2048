@@ -31,20 +31,20 @@ class GameGrid:
 
    # A method for displaying the game grid
    def display(self):
-    # 1. Arka planı temizle
+
     stddraw.clear(self.empty_cell_color)
 
-    # 2. Oyun gridini çiz
+
     self.draw_grid()
 
-    # 3. Tetromino varsa onu çiz
+
     if self.current_tetromino is not None:
         self.current_tetromino.draw()
 
-    # 4. Gridin kenar kutusunu çiz
+
     self.draw_boundaries()
 
-    # 5. Skor yazısı ve başlığı
+
     stddraw.setFontSize(20)
     stddraw.setPenColor(Color(255, 255, 255))
     stddraw.text(self.grid_width + 1, self.grid_height - 1, "SCORE")
@@ -52,40 +52,40 @@ class GameGrid:
     stddraw.setFontSize(16)
     stddraw.text(self.grid_width + 1, self.grid_height - 2, f"{self.score}")
     
-    # 6. Sonraki tetromino başlığı ve gösterimi
+
     stddraw.setFontSize(20)
     stddraw.setPenColor(Color(255, 255, 255))
     stddraw.text(self.grid_width + 1, self.grid_height - 4, "NEXT")
     
-    # Sonraki tetromino'yu çiz
+
     if self.next_tetromino is not None:
         self.draw_next_tetromino()
 
-    # 7. Her şeyi göster
+
     stddraw.show(250)
 
-   # Sonraki tetromino'yu çizme metodu
+
    def draw_next_tetromino(self):
       if self.next_tetromino is None:
          return
          
-      # Sonraki tetromino'nun matrisini al
+
       tile_matrix = self.next_tetromino.tile_matrix
-      n = len(tile_matrix)  # Matris boyutu
+      n = len(tile_matrix)  
       
-      # Çizim konumunu güncelle - y pozisyonunu düşür
+
       center_x = self.grid_width + 1
-      center_y = self.grid_height - 7  # 6'dan 7'ye değiştirdik
+      center_y = self.grid_height - 7  
       
-      # Her bir hücreyi çiz
+
       for row in range(n):
          for col in range(n):
             if tile_matrix[row][col] is not None:
-               # Tetromino'nun ortasını referans alarak konum hesapla
+
                pos_x = center_x + (col - n/2 + 0.5)
                pos_y = center_y - (row - n/2 + 0.5)
                
-               # Bu konumda tile'ı çiz
+
                tile_matrix[row][col].draw(Point(pos_x, pos_y))
 
 
@@ -103,24 +103,23 @@ class GameGrid:
                 row_sum += tile.number
 
         if full:
-            # 1. Skora ekle
+
             self.score += row_sum
             rows_cleared += 1
 
-            # 2. Satırı temizle
+
             for col in range(self.grid_width):
                 self.tile_matrix[row][col] = None
 
-            # 3. Üst satırları aşağı kaydır
             for r in range(row, self.grid_height - 1):
                 for c in range(self.grid_width):
                     self.tile_matrix[r][c] = self.tile_matrix[r + 1][c]
 
-            # 4. En üst satırı boş yap
+
             for c in range(self.grid_width):
                 self.tile_matrix[self.grid_height - 1][c] = None
 
-            # 5. Aynı satırı tekrar kontrol et
+
             row -= 1
     return rows_cleared
    

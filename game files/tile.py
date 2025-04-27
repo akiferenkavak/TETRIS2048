@@ -33,21 +33,21 @@ class Tile:
         self.box_color = Tile._BOX_COLOR
 
     def draw(self, position, length=1):
-        # Güncel renklendirme
+
         self.background_color = Tile._BG_COLORS.get(self.number, Color(60, 58, 50))
         self.foreground_color = Tile._FG_DARK if self.number <= 4 else Tile._FG_LIGHT
 
-        # Arka plan kutusu
+
         stddraw.setPenColor(self.background_color)
         stddraw.filledSquare(position.x, position.y, length / 2)
 
-        # Kenarlık çizgisi
+
         stddraw.setPenColor(self.box_color)
         stddraw.setPenRadius(Tile.boundary_thickness)
         stddraw.square(position.x, position.y, length / 2)
         stddraw.setPenRadius()
 
-        # Sayı
+
         stddraw.setPenColor(self.foreground_color)
         stddraw.setFontFamily(Tile.font_family)
         stddraw.setFontSize(Tile.font_size)
