@@ -31,6 +31,8 @@ class Tile:
         self.background_color = Tile._BG_COLORS.get(2)
         self.foreground_color = Tile._FG_DARK
         self.box_color = Tile._BOX_COLOR
+        self.tetromino_id = None  # added tetromino_id for saving the integrity
+        self.type = type  # tetromino type O L T I J S Z
 
     def draw(self, position, length=1):
         # Güncel renklendirme
