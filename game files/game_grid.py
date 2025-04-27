@@ -127,17 +127,18 @@ class GameGrid:
  
    def merge_tiles(self):
     for col in range(self.grid_width):
-        row = 0
-        while row < self.grid_height - 1:
-            curr_tile = self.tile_matrix[row][col]
-            above_tile = self.tile_matrix[row + 1][col]
+      merged_flags = [False for _ in range(self.grid_height)]
+      for row in range(self.grid_height - 1):
+        current_tile = self.tile_matrix[row][col]
+        tile_above = self.tile_matrix[row + 1][col]
 
-            if curr_tile and above_tile and curr_tile.number == above_tile.number:
-                curr_tile.number *= 2
+        if current_tile and tile_above and current_tile.number == tile_above.number:
+            if not merged_flags[row] and not merged_flags[row + 1]:
+                self.tile_matrix[row][col].number *= 2
                 self.tile_matrix[row + 1][col] = None
-                self.score += curr_tile.number
-                row += 1
-            row += 1
+                merged_flags[row] = True
+                self.score += self.tile_matrix[row][col].number
+
 
     self.drop_floating_tiles()
    def drop_floating_tiles(self):

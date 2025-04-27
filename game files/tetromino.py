@@ -212,8 +212,7 @@ class Tetromino:
 # Method to rotate the tetromino clockwise
    def rotate_clockwise(self, game_grid):
       # Skip rotation for O tetromino as it looks the same when rotated
-      if self.type == 'O':
-         return True
+   
       
       # Create a copy of the tile matrix to work with
       n = len(self.tile_matrix)
@@ -236,8 +235,7 @@ class Tetromino:
    # Method to rotate the tetromino counter-clockwise
    def rotate_counter_clockwise(self, game_grid):
       # Skip rotation for O tetromino as it looks the same when rotated
-      if self.type == 'O':
-         return True
+      
       
       # Create a copy of the tile matrix to work with
       n = len(self.tile_matrix)
