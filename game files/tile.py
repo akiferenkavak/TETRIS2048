@@ -1,12 +1,10 @@
-import lib.stddraw as stddraw  # used for drawing the tiles to display them
-from lib.color import Color  # used for coloring the tiles
+import lib.stddraw as stddraw  
+from lib.color import Color  
 
-# A class for modeling numbered tiles as in 2048
 class Tile:
     boundary_thickness = 0.004
     font_family, font_size = "Arial", 16
 
-    # Background colors mapped by tile number
     _BG_COLORS = {
         2: Color(238, 228, 218),
         4: Color(237, 224, 200),
@@ -31,6 +29,7 @@ class Tile:
         self.background_color = Tile._BG_COLORS.get(2)
         self.foreground_color = Tile._FG_DARK
         self.box_color = Tile._BOX_COLOR
+        self.is_connected = False
 
     def draw(self, position, length=1):
 
