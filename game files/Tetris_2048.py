@@ -11,6 +11,7 @@ from tile import Tile
 import random
 
 
+
 def play_background_music():
     try:
         music_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "sounds", "main_music.wav")
@@ -179,7 +180,8 @@ def start():
         
         if not is_paused:
             success = current_tetromino.move("down", grid)
-            
+            grid.eliminate_floating_pieces()
+
             if not success:
                 tiles, pos = current_tetromino.get_min_bounded_tile_matrix(True)
                 game_over = grid.update_grid(tiles, pos)
